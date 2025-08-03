@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { apiClient } from '@/api/apiClient';
 import { AxiosError } from 'axios';
 
-type LoginPayload = {
+export type LoginPayload = {
   email: string;
   password: string;
 };

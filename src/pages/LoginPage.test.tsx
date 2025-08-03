@@ -30,11 +30,7 @@ vi.mock('@/components/common/LoginFormSection', () => ({
   ),
 }));
 
-vi.mock('@/utils/localStorage', () => ({
-  getUserFromStorage: vi.fn(() => null),
-  setUserToStorage: vi.fn(),
-  clearUserStorage: vi.fn(),
-}));
+
 
 const queryClient = new QueryClient();
 
@@ -52,6 +48,7 @@ describe('LoginPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockUseLocation.mockReturnValue({ state: { from: '/previous-page' } });
+    vi.spyOn(window.localStorage, 'getItem').mockReturnValue(null);
   });
 
   it('로고와 LoginFormSection이 보여야 한다', () => {
@@ -81,4 +78,15 @@ describe('LoginPage', () => {
 
     expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
   });
+
+  // it('이미 로그인된 사용자는 로그인 페이지 접근 시 홈(/)으로 리디렉션된다', () => {
+  //   vi.spyOn(window.localStorage, 'getItem').mockReturnValue(JSON.stringify({
+  //     email: 'test@kakao.com',
+  //     name: 'Test User',
+  //     authToken: 'mock-auth-token',
+  //   }));
+  //   renderWithAllProviders(<LoginPage />);
+
+  //   expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
+  // });
 });
