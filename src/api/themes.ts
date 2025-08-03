@@ -30,12 +30,20 @@ export const fetchThemes = async (): Promise<Theme[]> => {
   return response.data.data;
 };
 
-export const fetchThemeDetail = async (themeId: number): Promise<ThemeDetail> => {
-  const res = await apiClient.get<ApiResponse<ThemeDetail>>(`/api/themes/${themeId}/info`);
+export const fetchThemeDetail = async (
+  themeId: number
+): Promise<ThemeDetail> => {
+  const res = await apiClient.get<ApiResponse<ThemeDetail>>(
+    `/api/themes/${themeId}/info`
+  );
   return res.data.data;
 };
 
-export const fetchThemeProducts = async (themeId: number, cursor: number, limit: number): Promise<ThemeProductsResponse> => {
+export const fetchThemeProducts = async (
+  themeId: number,
+  cursor: number,
+  limit: number
+): Promise<ThemeProductsResponse> => {
   const res = await apiClient.get<ApiResponse<ThemeProductsResponse>>(
     `/api/themes/${themeId}/products`,
     {

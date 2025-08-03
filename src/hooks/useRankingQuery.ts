@@ -16,7 +16,10 @@ export interface Product {
   brandName: string;
 }
 
-const fetchRanking = async (filter: FilterValue, type: TabValue): Promise<Product[]> => {
+const fetchRanking = async (
+  filter: FilterValue,
+  type: TabValue
+): Promise<Product[]> => {
   const res = await apiClient.get('/api/products/ranking', {
     params: { targetType: filter, rankType: type },
   });

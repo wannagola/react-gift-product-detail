@@ -49,7 +49,8 @@ const RecipientsModal = ({
     // quantity 값을 숫자로 명시적으로 변환하고, 유효하지 않으면 1로 설정
     const cleanedRecipients = data.recipients.map((r) => ({
       ...r,
-      quantity: typeof r.quantity === 'number' && !isNaN(r.quantity) ? r.quantity : 1,
+      quantity:
+        typeof r.quantity === 'number' && !isNaN(r.quantity) ? r.quantity : 1,
     }));
 
     onSave(cleanedRecipients); // 수정된 recipients 배열 전달

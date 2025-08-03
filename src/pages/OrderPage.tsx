@@ -6,7 +6,7 @@ import OrderForm, { OrderFormData } from '@/components/order/OrderForm';
 import RecipientsModal from '@/components/order/RecipientsModal';
 import Spinner from '@/components/common/Spinner';
 import { useCards } from '@/hooks/useCards';
-import { useProductSummary } from '@/hooks/useProductSummary';
+import { useProductSummaryQuery } from '@/hooks/useProductSummaryQuery';
 import { useAuth } from '@/contexts/AuthContext';
 import { useOrderMutation } from '@/hooks/useOrderMutation';
 import type { Recipient } from '@/types/order';
@@ -17,10 +17,10 @@ const OrderPage = () => {
   const navigate = useNavigate();
 
   const {
-    product,
-    loading: productLoading,
+    data: product,
+    isLoading: productLoading,
     error: productError,
-  } = useProductSummary(productId);
+  } = useProductSummaryQuery(productId);
 
   const { cards, loading: cardsLoading, error: cardsError } = useCards();
   const { user } = useAuth();
@@ -38,6 +38,9 @@ const OrderPage = () => {
     return (
       <ErrorText>메시지 카드를 불러오는 중 오류가 발생했습니다.</ErrorText>
     );
+  if (!cards || cards.length === 0) {
+    return <ErrorText>메시지 카드를 불러올 수 없습니다.</ErrorText>;
+  }
 
   const handleOrderSubmit = async (form: OrderFormData) => {
     if (!user) {

@@ -11,6 +11,7 @@ import LoginPage from '@/pages/loginpage';
 import MyPage from '@/pages/MyPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 import OrderPage from '@/pages/OrderPage';
+import ProductDetailPage from '@/pages/ProductDetailPage';
 import ThemeProductListPage from '@/pages/ThemeProductListPage';
 import { AuthProvider } from '@/contexts/AuthProvider';
 import ProtectedRoute from '@/components/common/ProtectedRoute';
@@ -51,7 +52,14 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/themes/:themeId" element={<ThemeProductListPage />} />
+              <Route
+                path="/product/:id"
+                element={<ProductDetailPage />}
+              />
+              <Route
+                path="/themes/:themeId"
+                element={<ThemeProductListPage />}
+              />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </AppInner>

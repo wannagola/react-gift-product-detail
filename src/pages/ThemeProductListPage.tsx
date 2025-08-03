@@ -28,7 +28,6 @@ const ThemeProductListPage: React.FC = () => {
 
   const observerRef = useRef<HTMLDivElement>(null);
   const observer = useRef<IntersectionObserver | null>(null);
-  
 
   useEffect(() => {
     if (themeError && themeError.message.includes('404')) {
@@ -67,8 +66,6 @@ const ThemeProductListPage: React.FC = () => {
       }
     };
   }, [handleObserver]);
-
-  
 
   if (themeLoading) {
     return <Spinner />;

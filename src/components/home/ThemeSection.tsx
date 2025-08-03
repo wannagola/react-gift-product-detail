@@ -18,7 +18,10 @@ const ThemeSection: React.FC = () => {
       <Title>선물 테마</Title>
       <Grid>
         {currentThemes.map((t) => (
-          <Card key={t.themeId} onClick={() => navigate(`/themes/${t.themeId}`)}>
+          <Card
+            key={t.themeId}
+            onClick={() => navigate(`/themes/${t.themeId}`)}
+          >
             <Thumb src={t.image} alt={t.name} />
             <Label>{t.name}</Label>
           </Card>
