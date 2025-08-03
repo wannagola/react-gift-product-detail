@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProductDetail, getProductSummary } from '@/api/product';
+import { fetchProductDetail, fetchProductSummary } from '@/api/product';
 import { ProductDetail } from '@/types/product';
 import { GiftItem } from '@/constants/GiftItem';
 import { toast } from 'react-toastify';
@@ -16,8 +16,8 @@ export const useProductDetailQuery = (productId: number) => {
     queryKey: ['productDetail', productId],
     queryFn: async () => {
       const [summary, detail] = await Promise.all([
-        getProductSummary(productId),
-        getProductDetail(productId),
+        fetchProductSummary(productId),
+        fetchProductDetail(productId),
       ]);
       return { ...summary, ...detail };
     },

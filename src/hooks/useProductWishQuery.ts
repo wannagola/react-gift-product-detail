@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProductWish } from '@/api/product';
+import { fetchProductWish } from '@/api/product';
 import { ProductWish } from '@/types/product';
 import { toast } from 'react-toastify';
 
 export const useProductWishQuery = (productId: number) => {
-  return useQuery<ProductWish, Error, ProductWish, ['productWish', number]>({
+  return useQuery<ProductWish, Error, ProductWish, ['productWish', number]>({ 
     queryKey: ['productWish', productId],
-    queryFn: () => getProductWish(productId),
+    queryFn: () => fetchProductWish(productId),
     enabled: !!productId,
     meta: {
       onError: (error: Error) => {
@@ -16,3 +16,4 @@ export const useProductWishQuery = (productId: number) => {
     },
   });
 };
+

@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { useProductDetail } from '@/hooks/useProductDetail';
+import { useProductDetailQuery } from '@/hooks/useProductDetailQuery';
 import { useProductHighlightReviewQuery } from '@/hooks/useProductHighlightReviewQuery';
 import { useProductWishQuery } from '@/hooks/useProductWishQuery';
 import { useToggleProductWishMutation } from '@/hooks/useToggleProductWishMutation';
@@ -15,10 +15,10 @@ const ProductDetailPageContent: React.FC = () => {
   const navigate = useNavigate();
 
   const {
-    product,
-    loading: productLoading,
+    data: product,
+    isLoading: productLoading,
     error: productError,
-  } = useProductDetail(productId);
+  } = useProductDetailQuery(productId);
   const { data: reviews, isLoading: reviewsLoading } =
     useProductHighlightReviewQuery(productId);
   const { data: wishInfo, isLoading: wishLoading } =
@@ -48,30 +48,25 @@ const ProductDetailPageContent: React.FC = () => {
 
   return (
     <Container>
-      <ProductImage src={product.imageURL} alt={product.name} />
+      <ProductImage src={product?.imageURL} alt={product?.name} />
       <ProductInfo>
-        <ProductName>{product.name}</ProductName>
+        <ProductName>{product?.name}</ProductName>
         <ProductPrice>
-          {product.price?.sellingPrice.toLocaleString()}원
+          {product?.price?.sellingPrice?.toLocaleString()}원
         </ProductPrice>
-        <ProductDescription>{product.description}</ProductDescription>
+        <ProductDescription dangerouslySetInnerHTML={{ __html: product?.description || '' }} />
 
-        <WishSection>
-          <WishButton onClick={handleWishToggle} isWished={wishInfo?.isWished}>
-            <FiHeart size={20} />
-            <span>{wishInfo?.wishCount.toLocaleString()}</span>
-          </WishButton>
-        </WishSection>
-
-        <AnnouncementSection>
-          <SectionTitle>상품 고시 정보</SectionTitle>
-          {product.announcement.map((item, index) => (
-            <AnnouncementItem key={index}>
-              <AnnouncementName>{item.name}</AnnouncementName>
-              <AnnouncementValue>{item.value}</AnnouncementValue>
-            </AnnouncementItem>
-          ))}
-        </AnnouncementSection>
+        {product.announcement && product.announcement.length > 0 && (
+          <AnnouncementSection>
+            <SectionTitle>상품 고시 정보</SectionTitle>
+            {product.announcement.map((item, index) => (
+              <AnnouncementItem key={index}>
+                <AnnouncementName>{item.name}</AnnouncementName>
+                <AnnouncementValue>{item.value}</AnnouncementValue>
+              </AnnouncementItem>
+            ))}
+          </AnnouncementSection>
+        )}
 
         {reviews && reviews.reviews.length > 0 && (
           <ReviewSection>
@@ -87,7 +82,13 @@ const ProductDetailPageContent: React.FC = () => {
           </ReviewSection>
         )}
 
-        <GiftButton onClick={handleGiftButtonClick}>선물하기</GiftButton>
+        <ActionButtonsContainer>
+          <WishButton onClick={handleWishToggle} isWished={wishInfo?.isWished}>
+            <FiHeart size={16} />
+            <span>{wishInfo?.wishCount.toLocaleString()}</span>
+          </WishButton>
+          <GiftButton onClick={handleGiftButtonClick}>선물하기</GiftButton>
+        </ActionButtonsContainer>
       </ProductInfo>
     </Container>
   );
@@ -115,6 +116,7 @@ const Container = styled.div`
 
 const ProductImage = styled.img`
   width: 100%;
+  max-width: 100%;
   height: auto;
   border-radius: ${({ theme }) => theme.spacing.spacing2};
   margin-bottom: ${({ theme }) => theme.spacing.spacing4};
@@ -124,6 +126,7 @@ const ProductInfo = styled.div`
   padding: ${({ theme }) => theme.spacing.spacing4};
   background-color: ${({ theme }) => theme.colors.gray00};
   border-radius: ${({ theme }) => theme.spacing.spacing2};
+  overflow-x: hidden;
 `;
 
 const ProductName = styled.h1`
@@ -143,10 +146,16 @@ const ProductDescription = styled.p`
   color: ${({ theme }) => theme.textColors.sub};
   line-height: 1.6;
   margin-bottom: ${({ theme }) => theme.spacing.spacing6};
+  word-break: break-word;
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 `;
 
 const GiftButton = styled.button`
-  width: 100%;
+  flex: 1;
   padding: ${({ theme }) => theme.spacing.spacing3};
   background-color: ${({ theme }) => theme.sementicColors.kakaoYellow};
   color: #000000;
@@ -170,24 +179,31 @@ const ErrorText = styled.p`
   margin: ${({ theme }) => theme.spacing.spacing4} 0;
 `;
 
-const WishSection = styled.div`
+const ActionButtonsContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: ${({ theme }) => theme.spacing.spacing4};
+  gap: ${({ theme }) => theme.spacing.spacing2};
+  margin-top: ${({ theme }) => theme.spacing.spacing6};
 `;
 
 const WishButton = styled.button<{ isWished?: boolean }>`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.spacing1};
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
   background: none;
-  border: none;
+  border: 1px solid ${({ theme }) => theme.borderColors.default};
   cursor: pointer;
   color: ${({ isWished, theme }) =>
     isWished ? theme.colors.red500 : theme.textColors.sub};
 
   span {
-    font: ${({ theme }) => theme.typography.body2Regular};
+    display: none; /* 텍스트 숨김 */
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.gray100};
   }
 `;
 

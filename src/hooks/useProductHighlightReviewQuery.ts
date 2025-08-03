@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getProductHighlightReview } from '@/api/product';
+import { fetchProductHighlightReview } from '@/api/product';
 import { ProductReview } from '@/types/product';
 import { toast } from 'react-toastify';
 
@@ -11,7 +11,7 @@ export const useProductHighlightReviewQuery = (productId: number) => {
     ['productHighlightReview', number]
   >({
     queryKey: ['productHighlightReview', productId],
-    queryFn: () => getProductHighlightReview(productId),
+    queryFn: () => fetchProductHighlightReview(productId),
     enabled: !!productId,
     meta: {
       onError: (error: Error) => {

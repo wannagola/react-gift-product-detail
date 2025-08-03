@@ -100,7 +100,7 @@ const OrderForm = ({
         <Info>
           <Brand>{product.brandName}</Brand>
           <ProdName>{product.name}</ProdName>
-          <Price>상품가 {product.price.sellingPrice.toLocaleString()}원</Price>
+          <Price>상품가 {product?.price?.sellingPrice?.toLocaleString()}원</Price>
         </Info>
       </ProductCard>
 

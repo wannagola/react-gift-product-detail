@@ -1,18 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { apiClient } from '@/api/apiClient';
+import { fetchProductSummary } from '@/api/product';
 import { GiftItem } from '@/constants/GiftItem';
 import { useNavigate } from 'react-router-dom';
-
-interface ApiResponse<T> {
-  data: T;
-}
-
-const fetchProductSummary = async (productId: number): Promise<GiftItem> => {
-  const res = await apiClient.get<ApiResponse<GiftItem>>(
-    `/api/products/${productId}`
-  );
-  return res.data.data;
-};
 
 export const useProductSummaryQuery = (productId: number) => {
   const navigate = useNavigate();
