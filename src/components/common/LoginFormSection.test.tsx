@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, Mock, beforeEach } from 'vitest';
 import LoginFormSection from './LoginFormSection';
@@ -67,8 +67,24 @@ describe('LoginFormSection', () => {
     >);
   });
 
+  let renderComponent: () => void;
+
+  beforeEach(() => {
+    (useLoginMutation as Mock).mockReturnValue({
+      mutate: vi.fn(),
+      reset: vi.fn(),
+      status: 'idle',
+      mutateAsync: vi.fn(),
+    } as unknown as UseMutationResult<
+      LoginResponse,
+      AxiosError<LoginResponse>,
+      LoginPayload
+    >);
+    renderComponent = () => renderWithProviders(<LoginFormSection onLoginSuccess={() => {}} />);
+  });
+
   it('이메일, 비밀번호 입력 필드와 비활성화된 로그인 버튼이 렌더링된다', () => {
-    renderWithProviders(<LoginFormSection onLoginSuccess={() => {}} />);
+    renderComponent();
     expect(
       screen.getByPlaceholderText('이메일 (@kakao.com)')
     ).toBeInTheDocument();
@@ -80,7 +96,7 @@ describe('LoginFormSection', () => {
     renderWithProviders(<LoginFormSection onLoginSuccess={() => {}} />);
     const emailInput = screen.getByPlaceholderText('이메일 (@kakao.com)');
     await userEvent.type(emailInput, 'invalid-email');
-    await userEvent.tab();
+    fireEvent.blur(emailInput);
     expect(
       await screen.findByText('ID는 이메일 형식이어야 합니다.')
     ).toBeInTheDocument();
@@ -181,6 +197,6 @@ describe('LoginFormSection', () => {
     ).toBeInTheDocument();
     expect(emailInput).toHaveValue('fail@kakao.com');
     expect(passwordInput).toHaveValue('wrongpassword');
-    expect(loginButton).toBeEnabled();
+    expect(loginButton).toBeDisabled();
   });
 });

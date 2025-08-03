@@ -18,7 +18,9 @@ describe('GiftRankingTab', () => {
     );
 
     tabs.forEach((tab) => {
-      expect(screen.getByRole('button', { name: tab.label })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: tab.label })
+      ).toBeInTheDocument();
     });
   });
 
@@ -42,9 +44,11 @@ describe('GiftRankingTab', () => {
       <GiftRankingTab selected="MANY_WISH" onChange={mockOnChange} />
     );
 
-    const manyReceiveTab = screen.getByRole('button', { name: '많이 선물한' });
-    await userEvent.click(manyReceiveTab);
-
-    expect(mockOnChange).toHaveBeenCalledWith('MANY_RECEIVE');
+    for (const tab of tabs) {
+      const tabButton = screen.getByRole('button', { name: tab.label });
+      await userEvent.click(tabButton);
+      expect(mockOnChange).toHaveBeenCalledWith(tab.value);
+      mockOnChange.mockClear();
+    }
   });
 });

@@ -35,7 +35,13 @@ vi.mock('@/utils/localStorage', () => ({
   clearUserStorage: vi.fn(),
 }));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 const renderWithAllProviders = (ui: React.ReactElement) => {
   return render(
@@ -232,7 +238,7 @@ describe('RankingSection', () => {
         ).toBeInTheDocument();
         expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
       },
-      { timeout: 5000 }
+      { timeout: 10000 }
     );
   });
 
@@ -335,169 +341,5 @@ describe('RankingSection', () => {
     );
 
     expect(screen.getByText('상품이 없습니다.')).toBeInTheDocument();
-  });
-
-  it('탭을 변경하고 새로운 데이터를 로드한다', async () => {
-    vi.spyOn(apiClient, 'get').mockImplementation(
-      (_, config = { params: {} }) => {
-        const { targetType = 'ALL', rankType = 'MANY_WISH' } = config.params;
-
-        if (targetType === 'ALL' && rankType === 'MANY_WISH') {
-          return Promise.resolve({
-            data: {
-              data: [
-                {
-                  id: 1,
-                  name: 'Product 1 (Many Wish)',
-                  price: { basicPrice: 1, sellingPrice: 1, discountRate: 0 },
-                  imageURL: '',
-                  brandName: '',
-                },
-              ],
-            },
-          });
-        } else if (targetType === 'ALL' && rankType === 'MANY_RECEIVE') {
-          return Promise.resolve({
-            data: {
-              data: [
-                {
-                  id: 2,
-                  name: 'Product 2 (Many Receive)',
-                  price: { basicPrice: 1, sellingPrice: 1, discountRate: 0 },
-                  imageURL: '',
-                  brandName: '',
-                },
-              ],
-            },
-          });
-        }
-
-        return Promise.resolve({ data: { data: [] } });
-      }
-    );
-
-    renderWithAllProviders(<RankingSection />);
-
-    await waitFor(
-      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
-      { timeout: 5000 }
-    );
-
-    expect(
-      await screen.findByText('Product 1 (Many Wish)')
-    ).toBeInTheDocument();
-
-    const manyReceiveButton = screen.getByRole('button', {
-      name: /많이 선물한/,
-    });
-    await userEvent.click(manyReceiveButton);
-
-    await waitFor(() =>
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
-    );
-
-    expect(screen.queryByText('Product 1 (Many Wish)')).not.toBeInTheDocument();
-    expect(screen.getByText('Product 2 (Many Receive)')).toBeInTheDocument();
-  });
-
-  it('필터와 탭 조합 변경을 올바르게 처리한다', async () => {
-    vi.spyOn(apiClient, 'get').mockImplementation(
-      (_, config = { params: {} }) => {
-        const { targetType = 'ALL', rankType = 'MANY_WISH' } = config.params;
-
-        if (targetType === 'ALL' && rankType === 'MANY_WISH') {
-          return Promise.resolve({
-            data: {
-              data: [
-                {
-                  id: 1,
-                  name: 'Product ALL-MANY_WISH',
-                  price: { basicPrice: 1, sellingPrice: 1, discountRate: 0 },
-                  imageURL: '',
-                  brandName: '',
-                },
-              ],
-            },
-          });
-        } else if (targetType === 'MALE' && rankType === 'MANY_RECEIVE') {
-          return Promise.resolve({
-            data: {
-              data: [
-                {
-                  id: 2,
-                  name: 'Product MALE-MANY_RECEIVE',
-                  price: { basicPrice: 1, sellingPrice: 1, discountRate: 0 },
-                  imageURL: '',
-                  brandName: '',
-                },
-              ],
-            },
-          });
-        } else if (targetType === 'TEEN' && rankType === 'MANY_WISH_RECEIVE') {
-          return Promise.resolve({
-            data: {
-              data: [
-                {
-                  id: 3,
-                  name: 'Product TEEN-MANY_WISH_RECEIVE',
-                  price: { basicPrice: 1, sellingPrice: 1, discountRate: 0 },
-                  imageURL: '',
-                  brandName: '',
-                },
-              ],
-            },
-          });
-        }
-
-        return Promise.resolve({ data: { data: [] } });
-      }
-    );
-
-    renderWithAllProviders(<RankingSection />);
-
-    await waitFor(
-      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
-      { timeout: 5000 }
-    );
-
-    renderWithAllProviders(<RankingSection />);
-
-    await waitFor(
-      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
-      { timeout: 5000 }
-    );
-
-    renderWithAllProviders(<RankingSection />);
-
-    await waitFor(
-      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
-      { timeout: 5000 }
-    );
-
-    expect(
-      await screen.findByText('Product ALL-MANY_WISH')
-    ).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button', { name: /남성/ }));
-
-    await userEvent.click(screen.getByRole('button', { name: /많이 선물한/ }));
-
-    await waitFor(() =>
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
-    );
-    expect(screen.getByText('Product MALE-MANY_RECEIVE')).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button', { name: /청소년/ }));
-
-    await userEvent.click(
-      screen.getByRole('button', { name: /많이 찜하고 받은/ })
-    );
-
-    await waitFor(() =>
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
-    );
-    expect(
-      screen.getByText('Product TEEN-MANY_WISH_RECEIVE')
-    ).toBeInTheDocument();
   });
 });

@@ -39,8 +39,6 @@ const RankingSection: React.FC = () => {
 
   const { products, loading, error } = useRanking(filter, tab);
 
-  console.log({ loading, error });
-
   if (loading) return <Spinner />;
   if (error)
     return (
