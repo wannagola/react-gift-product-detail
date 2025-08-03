@@ -20,7 +20,26 @@ vi.mock('@/utils/localStorage', () => ({
   clearUserStorage: vi.fn(),
 }));
 
-vi.mock('@/hooks/useLoginMutation');
+vi.mock('@/hooks/useLoginMutation', () => ({
+  useLoginMutation: vi.fn(() => ({
+    mutate: vi.fn(),
+    data: undefined,
+    error: null,
+    isIdle: false,
+    isLoading: false,
+    isPaused: false,
+    isSuccess: false,
+    isError: false,
+    isSettled: false,
+    status: 'idle',
+    reset: vi.fn(),
+    variables: undefined,
+    submittedAt: 0,
+    failureCount: 0,
+    failureReason: null,
+    errorUpdateCount: 0,
+  })),
+}));
 
 const queryClient = new QueryClient();
 
@@ -164,6 +183,4 @@ describe('LoginFormSection', () => {
     expect(passwordInput).toHaveValue('wrongpassword');
     expect(loginButton).toBeEnabled();
   });
-
-  // 기타 이메일, 도메인, 비밀번호 유효성 테스트는 그대로 유지
 });

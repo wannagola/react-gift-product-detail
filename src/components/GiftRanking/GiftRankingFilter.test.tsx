@@ -18,7 +18,9 @@ describe('GiftRankingFilter', () => {
     );
 
     filters.forEach((filter) => {
-      expect(screen.getByRole('button', { name: new RegExp(filter.label) })).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: new RegExp(filter.label) })
+      ).toBeInTheDocument();
     });
   });
 
@@ -60,11 +62,11 @@ describe('GiftRankingFilter', () => {
     expect(screen.getByRole('button', { name: /남성이/ })).toHaveTextContent(
       '👨남성이'
     );
-        expect(screen.getByRole('button', { name: /청소년이/ })).toHaveTextContent(
+    expect(screen.getByRole('button', { name: /청소년이/ })).toHaveTextContent(
       '🧒청소년이'
     );
     expect(screen.getByRole('button', { name: /전체/ })).not.toHaveTextContent(
-      /\s[👩👨🧑]/u // No icon for '전체'
+      /\s[👩👨🧑]/u
     );
   });
 });

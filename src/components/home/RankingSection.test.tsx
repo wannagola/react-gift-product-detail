@@ -225,10 +225,15 @@ describe('RankingSection', () => {
 
     renderWithAllProviders(<RankingSection />);
 
-    await waitFor(() => {
-      expect(screen.getByText('불러오는 중 오류가 발생했습니다.')).toBeInTheDocument();
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
-    }, { timeout: 5000 });
+    await waitFor(
+      () => {
+        expect(
+          screen.getByText('불러오는 중 오류가 발생했습니다.')
+        ).toBeInTheDocument();
+        expect(screen.queryByTestId('spinner')).not.toBeInTheDocument();
+      },
+      { timeout: 5000 }
+    );
   });
 
   it('초기에 제목과 모든 필터/탭 버튼이 렌더링된다', async () => {
@@ -241,16 +246,22 @@ describe('RankingSection', () => {
 
     expect(screen.getByText('실시간 급상승 선물랭킹')).toBeInTheDocument();
 
-    // Filter buttons
     expect(screen.getByRole('button', { name: /전체/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /여성이/ })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /남성이/ })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /청소년이/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /청소년이/ })
+    ).toBeInTheDocument();
 
-    // Tab buttons
-    expect(screen.getByRole('button', { name: /많이 찜한/ })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /많이 선물한/ })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /많이 찜하고 받은/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /많이 찜한/ })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /많이 선물한/ })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /많이 찜하고 받은/ })
+    ).toBeInTheDocument();
   });
 
   it('localStorage에서 기본 필터 및 탭 값을 적용한다', async () => {
@@ -367,13 +378,18 @@ describe('RankingSection', () => {
 
     renderWithAllProviders(<RankingSection />);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
-    , { timeout: 5000 });
+    await waitFor(
+      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
+      { timeout: 5000 }
+    );
 
-    expect(await screen.findByText('Product 1 (Many Wish)')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Product 1 (Many Wish)')
+    ).toBeInTheDocument();
 
-    const manyReceiveButton = screen.getByRole('button', { name: /많이 선물한/ });
+    const manyReceiveButton = screen.getByRole('button', {
+      name: /많이 선물한/,
+    });
     await userEvent.click(manyReceiveButton);
 
     await waitFor(() =>
@@ -439,27 +455,31 @@ describe('RankingSection', () => {
 
     renderWithAllProviders(<RankingSection />);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
-    , { timeout: 5000 });
+    await waitFor(
+      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
+      { timeout: 5000 }
+    );
 
-        renderWithAllProviders(<RankingSection />);
+    renderWithAllProviders(<RankingSection />);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
-    , { timeout: 5000 });
+    await waitFor(
+      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
+      { timeout: 5000 }
+    );
 
-        renderWithAllProviders(<RankingSection />);
+    renderWithAllProviders(<RankingSection />);
 
-    await waitFor(() =>
-      expect(screen.queryByTestId('spinner')).not.toBeInTheDocument()
-    , { timeout: 5000 });
+    await waitFor(
+      () => expect(screen.queryByTestId('spinner')).not.toBeInTheDocument(),
+      { timeout: 5000 }
+    );
 
-    expect(await screen.findByText('Product ALL-MANY_WISH')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Product ALL-MANY_WISH')
+    ).toBeInTheDocument();
 
-    // Male filter
     await userEvent.click(screen.getByRole('button', { name: /남성/ }));
-    // Many Receive tab
+
     await userEvent.click(screen.getByRole('button', { name: /많이 선물한/ }));
 
     await waitFor(() =>
@@ -467,9 +487,8 @@ describe('RankingSection', () => {
     );
     expect(screen.getByText('Product MALE-MANY_RECEIVE')).toBeInTheDocument();
 
-    // Teen filter
     await userEvent.click(screen.getByRole('button', { name: /청소년/ }));
-    // Many Wish & Receive tab
+
     await userEvent.click(
       screen.getByRole('button', { name: /많이 찜하고 받은/ })
     );
