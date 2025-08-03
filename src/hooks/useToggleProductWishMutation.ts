@@ -35,17 +35,11 @@ export const useToggleProductWishMutation = (productId: number) => {
 
       return { previousWish };
     },
-    onError: (_err, _newTodo, context) => {
+    onError: () => {
       toast.error('찜하기 상태 변경에 실패했습니다.');
-      if (context?.previousWish) {
-        queryClient.setQueryData(
-          ['productWish', productId],
-          context.previousWish
-        );
-      }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['productWish', productId] });
+      // Do nothing on settled to keep the optimistic update
     },
   });
 };

@@ -198,8 +198,14 @@ const WishButton = styled.button<{ isWished?: boolean }>`
   color: ${({ isWished, theme }) =>
     isWished ? theme.colors.red500 : theme.textColors.sub};
 
+  svg {
+    fill: ${({ isWished, theme }) =>
+      isWished ? theme.colors.red500 : 'none'};
+  }
+
   span {
-    display: none; /* 텍스트 숨김 */
+    display: inline;
+    margin-left: ${({ theme }) => theme.spacing.spacing1};
   }
 
   &:hover {
