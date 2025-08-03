@@ -39,7 +39,6 @@ export const useToggleProductWishMutation = (productId: number) => {
       toast.error('찜하기 상태 변경에 실패했습니다.');
     },
     onSettled: () => {
-      // Do nothing on settled to keep the optimistic update
     },
   });
 };
