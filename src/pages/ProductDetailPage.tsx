@@ -14,11 +14,16 @@ const ProductDetailPageContent: React.FC = () => {
   const productId = Number(id);
   const navigate = useNavigate();
 
-  const { product, loading: productLoading, error: productError } = useProductDetail(productId);
-  const { data: reviews, isLoading: reviewsLoading } = useProductHighlightReviewQuery(productId);
-  const { data: wishInfo, isLoading: wishLoading } = useProductWishQuery(productId);
+  const {
+    product,
+    loading: productLoading,
+    error: productError,
+  } = useProductDetail(productId);
+  const { data: reviews, isLoading: reviewsLoading } =
+    useProductHighlightReviewQuery(productId);
+  const { data: wishInfo, isLoading: wishLoading } =
+    useProductWishQuery(productId);
 
-  
   const { mutate: toggleWish } = useToggleProductWishMutation(productId);
 
   if (productLoading || reviewsLoading || wishLoading) {
@@ -46,9 +51,11 @@ const ProductDetailPageContent: React.FC = () => {
       <ProductImage src={product.imageURL} alt={product.name} />
       <ProductInfo>
         <ProductName>{product.name}</ProductName>
-        <ProductPrice>{product.price?.sellingPrice.toLocaleString()}원</ProductPrice>
+        <ProductPrice>
+          {product.price?.sellingPrice.toLocaleString()}원
+        </ProductPrice>
         <ProductDescription>{product.description}</ProductDescription>
-        
+
         <WishSection>
           <WishButton onClick={handleWishToggle} isWished={wishInfo?.isWished}>
             <FiHeart size={20} />
@@ -66,15 +73,19 @@ const ProductDetailPageContent: React.FC = () => {
           ))}
         </AnnouncementSection>
 
-        <ReviewSection>
-          <SectionTitle>하이라이트 리뷰 ({reviews?.totalCount.toLocaleString()})</SectionTitle>
-          {reviews?.reviews.map((review) => (
-            <ReviewItem key={review.id}>
-              <ReviewAuthor>{review.authorName}</ReviewAuthor>
-              <ReviewContent>{review.content}</ReviewContent>
-            </ReviewItem>
-          ))}
-        </ReviewSection>
+        {reviews && reviews.reviews.length > 0 && (
+          <ReviewSection>
+            <SectionTitle>
+              하이라이트 리뷰 ({reviews.totalCount.toLocaleString()})
+            </SectionTitle>
+            {reviews.reviews.map((review) => (
+              <ReviewItem key={review.id}>
+                <ReviewAuthor>{review.authorName}</ReviewAuthor>
+                <ReviewContent>{review.content}</ReviewContent>
+              </ReviewItem>
+            ))}
+          </ReviewSection>
+        )}
 
         <GiftButton onClick={handleGiftButtonClick}>선물하기</GiftButton>
       </ProductInfo>
@@ -83,7 +94,11 @@ const ProductDetailPageContent: React.FC = () => {
 };
 
 const ProductDetailPage: React.FC = () => (
-  <ErrorBoundary fallback={<ErrorText>상품 상세 페이지를 불러오는 중 오류가 발생했습니다.</ErrorText>}>
+  <ErrorBoundary
+    fallback={
+      <ErrorText>상품 상세 페이지를 불러오는 중 오류가 발생했습니다.</ErrorText>
+    }
+  >
     <Suspense fallback={<Spinner />}>
       <ProductDetailPageContent />
     </Suspense>
@@ -168,7 +183,8 @@ const WishButton = styled.button<{ isWished?: boolean }>`
   background: none;
   border: none;
   cursor: pointer;
-  color: ${({ isWished, theme }) => (isWished ? theme.colors.red500 : theme.textColors.sub)};
+  color: ${({ isWished, theme }) =>
+    isWished ? theme.colors.red500 : theme.textColors.sub};
 
   span {
     font: ${({ theme }) => theme.typography.body2Regular};

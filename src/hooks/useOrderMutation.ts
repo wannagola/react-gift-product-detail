@@ -21,7 +21,13 @@ type OrderErrorResponse = {
   message?: string;
 };
 
-const submitOrder = async ({ order, token }: { order: OrderParams; token: string }) => {
+const submitOrder = async ({
+  order,
+  token,
+}: {
+  order: OrderParams;
+  token: string;
+}) => {
   const res = await apiClient.post(API_PATH.ORDER, order, {
     headers: {
       Authorization: token,
@@ -33,7 +39,11 @@ const submitOrder = async ({ order, token }: { order: OrderParams; token: string
 export const useOrderMutation = () => {
   const navigate = useNavigate();
 
-  return useMutation<unknown, AxiosError<OrderErrorResponse>, { order: OrderParams; token: string }>({ 
+  return useMutation<
+    unknown,
+    AxiosError<OrderErrorResponse>,
+    { order: OrderParams; token: string }
+  >({
     mutationFn: submitOrder,
     onSuccess: () => {
       toast.success('주문이 성공적으로 완료되었습니다.');

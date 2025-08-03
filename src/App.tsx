@@ -51,7 +51,10 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/themes/:themeId" element={<ThemeProductListPage />} />
+              <Route
+                path="/themes/:themeId"
+                element={<ThemeProductListPage />}
+              />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </AppInner>

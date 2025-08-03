@@ -14,7 +14,9 @@ interface ApiResponse<T> {
 }
 
 const fetchThemeDetail = async (themeId: number): Promise<ThemeDetail> => {
-  const res = await apiClient.get<ApiResponse<ThemeDetail>>(`/api/themes/${themeId}/info`);
+  const res = await apiClient.get<ApiResponse<ThemeDetail>>(
+    `/api/themes/${themeId}/info`
+  );
   return res.data.data;
 };
 

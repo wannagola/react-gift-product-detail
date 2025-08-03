@@ -7,7 +7,12 @@ import { toast } from 'react-toastify';
 interface CombinedProductDetail extends GiftItem, ProductDetail {}
 
 export const useProductDetailQuery = (productId: number) => {
-  return useQuery<CombinedProductDetail, Error, CombinedProductDetail, ['productDetail', number]>({ 
+  return useQuery<
+    CombinedProductDetail,
+    Error,
+    CombinedProductDetail,
+    ['productDetail', number]
+  >({
     queryKey: ['productDetail', productId],
     queryFn: async () => {
       const [summary, detail] = await Promise.all([
@@ -17,7 +22,7 @@ export const useProductDetailQuery = (productId: number) => {
       return { ...summary, ...detail };
     },
     enabled: !!productId,
-    meta: { 
+    meta: {
       onError: (error: Error) => {
         console.error('상품 상세 정보 불러오기 실패:', error);
         toast.error('상품 상세 정보를 불러오는 데 실패했습니다.');

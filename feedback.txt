@@ -1,0 +1,58 @@
+에러바운더리도 잘 만들어서 적용해주신 걸로 보이고, hook도 알맞게 분리해서 전반적으로 코드가 깔끔하게 잘 만들어주신 것 같아 해당 PR은 바로 머지하겠습니다!
+다만 eol 이슈만 조금 챙겨주시면 좋을 것 같아요!
+고생하셨습니다~
+
+In src/hooks/useToggleProductWishMutation.ts:
+
+> @@ -0,0 +1,37 @@
++import { useMutation, useQueryClient } from '@tanstack/react-query';
++import { toggleProductWish } from '@/api/product';
++import { ProductWish } from '@/types/product';
++import { toast } from 'react-toastify';
++
++export const useToggleProductWishMutation = (productId: number) => {
++  const queryClient = useQueryClient();
++
++  return useMutation<void, Error, void, { previousWish: ProductWish | undefined }>({ 
++    mutationFn: () => toggleProductWish(productId),
++    onMutate: async () => {
++      await queryClient.cancelQueries({ queryKey: ['productWish', productId] });
+👍
+
+In src/pages/ProductDetailPage.tsx:
+
+> +        <ReviewSection>
++          <SectionTitle>하이라이트 리뷰 ({reviews?.totalCount.toLocaleString()})</SectionTitle>
++          {reviews?.reviews.map((review) => (
++            <ReviewItem key={review.id}>
++              <ReviewAuthor>{review.authorName}</ReviewAuthor>
++              <ReviewContent>{review.content}</ReviewContent>
++            </ReviewItem>
++          ))}
++        </ReviewSection>
+reviews 가 없는 경우는 조건부 처리해줘도 좋을 것 같네욥!
+
+In src/hooks/useProductDetailQuery.ts:
+
+> +    queryFn: async () => {
++      const [summary, detail] = await Promise.all([
++        getProductSummary(productId),
++        getProductDetail(productId),
++      ]);
++      return { ...summary, ...detail };
++    },
++    enabled: !!productId,
++    meta: { 
++      onError: (error: Error) => {
++        console.error('상품 상세 정보 불러오기 실패:', error);
++        toast.error('상품 상세 정보를 불러오는 데 실패했습니다.');
++      },
++    },
++  });
++};
+eol 오류가 있네욥! 👀
+
+—
+Reply to this email directly, view it on GitHub, or unsubscribe.
+You are receiving this because you authored the thread.
+

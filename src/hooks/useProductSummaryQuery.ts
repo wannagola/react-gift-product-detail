@@ -17,11 +17,11 @@ const fetchProductSummary = async (productId: number): Promise<GiftItem> => {
 export const useProductSummaryQuery = (productId: number) => {
   const navigate = useNavigate();
 
-  return useQuery<GiftItem, Error, GiftItem, ['productSummary', number]>({ 
+  return useQuery<GiftItem, Error, GiftItem, ['productSummary', number]>({
     queryKey: ['productSummary', productId],
     queryFn: () => fetchProductSummary(productId),
     enabled: !!productId,
-    meta: { 
+    meta: {
       onError: (error: Error) => {
         console.error('상품 요약 정보 불러오기 실패:', error);
         navigate('/');
